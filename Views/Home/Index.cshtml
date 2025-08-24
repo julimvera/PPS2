@@ -1,0 +1,38 @@
+﻿@model List<WebApp_Peluqueria.Models.ViewModels.PlanillaDiaViewModel>
+    @{
+        ViewData["Title"] = "Resumen Diario";
+    }
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success mt-3">
+            @TempData["Mensaje"]
+        </div>
+    }
+
+    <h2>Resumen del día: @DateTime.Today.ToString("dd/MM/yyyy")</h2>
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-light">
+            <tr>
+                <th>Cliente</th>
+                <th>Tratamiento realizado</th>
+                <th>Producto vendido</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Cliente</td>
+                    <td>@item.Tratamiento</td>
+                    <td>@item.Producto</td>
+                    <td>@item.Precio.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4 class="mt-4 text-end">Total ganado: <strong>@ViewBag.Total.ToString("C")</strong></h4>
+    

@@ -1,0 +1,65 @@
+﻿@model List<WebApp_Peluqueria.Models.Cliente>
+
+@{
+    ViewData["Title"] = "Clientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (TempData["Mensaje"] != null)
+{
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Mensaje"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+}
+
+<h1 class="mb-4">Listado de Clientes</h1>
+
+<form method="get" asp-action="Index" role="search" aria-label="Buscar cliente">
+    <div class="input-group mb-3">
+        <input type="text" name="buscar" value="@ViewBag.Buscar" class="form-control" placeholder="Buscar por nombre o apellido" />
+        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+    </div>
+</form>
+
+<a asp-action="Create" class="btn btn-success mb-3">+ Agregar Cliente</a>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered table-striped" aria-label="Tabla de clientes">
+        <thead class="table-light">
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Apellido</th>
+                <th scope="col">Teléfono</th>
+                <th>Observaciones</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cliente in Model)
+            {
+                <tr>
+                    <td>@cliente.Nombre</td>
+                    <td>@cliente.Apellido</td>
+                    <td>@cliente.Telefono</td>
+                    <td>@cliente.Observaciones</td>
+                    <td>
+                        <a asp-action="Detalle" asp-route-id="@cliente.Id" class="btn btn-sm btn-info">Historial</a>
+                        <a asp-action="Editar" asp-route-id="@cliente.Id" class="btn btn-sm btn-secondary">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@cliente.Id"
+                            class="btn btn-sm btn-danger"
+                            onclick="return confirm('¿Estás seguro de que querés eliminar este cliente?');">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-warning" role="alert">
+        No se encontraron clientes.
+    </div>
+}

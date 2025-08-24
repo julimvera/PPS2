@@ -1,0 +1,99 @@
+﻿@model WebApp_Peluqueria.Models.Cliente
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Historial del cliente";
+}
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show small-alert" role="alert">
+        @TempData["Mensaje"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+<div id="historial">
+   <h2>Historial de tratamientos de @Model.Nombre @Model.Apellido</h2>
+   <p>Teléfono: @Model.Telefono</p>
+
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Tipo de tratamiento</th>
+                <th>Descripcion</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Tratamientos != null && Model.Tratamientos.Any())
+            {
+                foreach (var tratamiento in Model.Tratamientos)
+                {
+                    <tr>
+                        <td>@tratamiento.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td>@tratamiento.Tipo</td>
+                        <td>@tratamiento.Descripcion</td>
+                        <td>@tratamiento.Precio.ToString("C")</td>
+                        <td>
+                            <form asp-controller="Tratamientos" asp-action="Eliminar" asp-route-id="@tratamiento.Id" method="post" onsubmit="return confirm('¿Estás segura de que querés eliminar este tratamiento?');">
+                                <button type="submit" class="btn btn-danger no-print">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">No hay tratamientos registrados para este cliente.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<button class="btn btn-outline-primary mb-3" onclick="window.print();">
+    🖨️ Imprimir historial
+</button>
+
+
+<h3 class="mt-4">Agregar nuevo tratamiento</h3>
+
+<form asp-action="AgregarTratamiento" method="post" class="mt-3">
+
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ClienteId" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label>Fecha del tratamiento:</label>
+        <input type="date" name="Fecha" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        <small class="text-muted">Si no seleccionás una fecha, se usará la fecha de hoy automáticamente.</small>
+    </div>
+
+    <div class="mb-3">
+        <label>Tipo de tratamiento:</label>
+        <select name="Tipo" class="form-select" required>
+            <option value="">Seleccione uno</option>
+            <option value="Tintura">Tintura</option>
+            <option value="Corte">Corte</option>
+            <option value="Peinado">Peinado</option>
+            <option value="Shock de keratina">Shock de keratina</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Descripción:</label>
+        <input type="text" name="Descripcion" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Precio:</label>
+        <input type="number" name="Precio" step="0.01" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar tratamiento</button>
+</form>
+
+<p class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary">Volver a la lista de clientes</a>
+</p>
